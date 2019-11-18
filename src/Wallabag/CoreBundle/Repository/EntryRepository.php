@@ -39,6 +39,26 @@ class EntryRepository extends EntityRepository
         return $this
             ->getSortedQueryBuilderByUser($userId)
             ->andWhere('e.isArchived = false')
+            ;
+    }
+
+    /**
+     * Retrieves entries with the same domain.
+     *
+     * @param int $userId
+     * @param int $entryId
+     *
+     * @return QueryBuilder
+     */
+    public function getBuilderForSameDomainByUser($userId, $entryId)
+    {
+        dump($entryId);die;
+
+        $
+
+        return $this
+            ->getSortedQueryBuilderByUser($userId)
+            ->andWhere('e.isArchived = false')
         ;
     }
 

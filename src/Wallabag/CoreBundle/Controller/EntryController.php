@@ -518,6 +518,24 @@ class EntryController extends Controller
     }
 
     /**
+     * List the entries with the same domain as the current one.
+     *
+     * @param int $page
+     *
+     * @Route("/same-domain/{id}/{page}", requirements={"id" = ".+"}, defaults={"page" = 1}, name="same_domain")
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getSameDomainEntries(Request $request, $page = 1)
+    {
+        if (!$this->get('craue_config')->get('share_public')) {
+            throw $this->createAccessDeniedException('Sharing an entry is disabled for this user.');
+        }
+
+        return $this->showEntries('same-domain', $request, $page);
+    }
+
+    /**
      * Global method to retrieve entries depending on the given type
      * It returns the response to be send.
      *
@@ -547,6 +565,9 @@ class EntryController extends Controller
                 break;
             case 'unread':
                 $qb = $repository->getBuilderForUnreadByUser($this->getUser()->getId());
+                break;
+            case 'same-domain':
+                $qb = $repository->getBuilderForSameDomainByUser($this->getUser()->getId(), $request->get('id'));
                 break;
             case 'all':
                 $qb = $repository->getBuilderForAllByUser($this->getUser()->getId());
