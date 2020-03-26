@@ -208,6 +208,8 @@ scheb_two_factor:
 
     google:
         enabled: "%twofactor_auth%"
+        label: wallabag
+        issuer: "%domain_name%"
         template: WallabagUserBundle:Authentication:form.html.twig
 
     email:
