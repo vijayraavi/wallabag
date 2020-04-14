@@ -49,7 +49,7 @@ class ConfigControllerTest extends WallabagCoreTestCase
         $form = $crawler->filter('button[id=config_save]')->form();
 
         $data = [
-            'config[theme]' => 'baggy',
+            'config[theme]' => 'material',
             'config[items_per_page]' => '30',
             'config[reading_speed]' => '100',
             'config[action_mark_as_read]' => '0',
@@ -68,7 +68,6 @@ class ConfigControllerTest extends WallabagCoreTestCase
     public function testChangeReadingSpeed()
     {
         $this->logInAs('admin');
-        $this->useTheme('baggy');
         $client = $this->getClient();
 
         $entry = new Entry($this->getLoggedInUser());
@@ -115,7 +114,7 @@ class ConfigControllerTest extends WallabagCoreTestCase
     {
         return [
             [[
-                'config[theme]' => 'baggy',
+                'config[theme]' => 'material',
                 'config[items_per_page]' => '',
                 'config[language]' => 'en',
             ]],
@@ -435,7 +434,6 @@ class ConfigControllerTest extends WallabagCoreTestCase
     public function testTaggingRuleCreation()
     {
         $this->logInAs('admin');
-        $this->useTheme('baggy');
         $client = $this->getClient();
 
         $crawler = $client->request('GET', '/config');
@@ -457,7 +455,7 @@ class ConfigControllerTest extends WallabagCoreTestCase
 
         $this->assertContains('flashes.config.notice.tagging_rules_updated', $crawler->filter('body')->extract(['_text'])[0]);
 
-        $editLink = $crawler->filter('.mode_edit')->last()->link();
+        $editLink = $crawler->filter('.edit-rule')->last()->link();
 
         $crawler = $client->click($editLink);
         $this->assertSame(302, $client->getResponse()->getStatusCode());
@@ -482,7 +480,7 @@ class ConfigControllerTest extends WallabagCoreTestCase
 
         $this->assertContains('readingTime <= 30', $crawler->filter('body')->extract(['_text'])[0]);
 
-        $deleteLink = $crawler->filter('.delete')->last()->link();
+        $deleteLink = $crawler->filter('.delete-rule')->last()->link();
 
         $crawler = $client->click($deleteLink);
         $this->assertSame(302, $client->getResponse()->getStatusCode());
@@ -966,19 +964,18 @@ class ConfigControllerTest extends WallabagCoreTestCase
     public function testSwitchViewMode()
     {
         $this->logInAs('admin');
-        $this->useTheme('baggy');
         $client = $this->getClient();
 
         $client->request('GET', '/unread/list');
 
-        $this->assertNotContains('listmode', $client->getResponse()->getContent());
+        $this->assertNotContains('collection', $client->getResponse()->getContent());
 
         $client->request('GET', '/config/view-mode');
         $crawler = $client->followRedirect();
 
         $client->request('GET', '/unread/list');
 
-        $this->assertContains('listmode', $client->getResponse()->getContent());
+        $this->assertContains('collection', $client->getResponse()->getContent());
 
         $client->request('GET', '/config/view-mode');
     }

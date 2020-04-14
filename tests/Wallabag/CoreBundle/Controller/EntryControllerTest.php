@@ -73,20 +73,6 @@ class EntryControllerTest extends WallabagCoreTestCase
         $this->assertContains('entry.list.number_on_the_page', $body[0]);
     }
 
-    public function testGetNew()
-    {
-        $this->logInAs('admin');
-        $this->useTheme('baggy');
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/new');
-
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
-
-        $this->assertCount(1, $crawler->filter('input[type=url]'));
-        $this->assertCount(1, $crawler->filter('form[name=entry]'));
-    }
-
     public function testPostNewViaBookmarklet()
     {
         $this->logInAs('admin');
