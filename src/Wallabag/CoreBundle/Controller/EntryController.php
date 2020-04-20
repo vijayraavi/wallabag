@@ -236,11 +236,25 @@ class EntryController extends Controller
     }
 
     /**
+     * Shows entries with annotations for current user.
+     *
+     * @param int $page
+     *
+     * @Route("/with_annotations/list/{page}", name="with_annotations", defaults={"page" = "1"})
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showWithAnnotationsEntriesAction(Request $request, $page)
+    {
+        return $this->showEntries('with_annotations', $request, $page);
+    }
+
+    /**
      * Shows random entry depending on the given type.
      *
      * @param string $type
      *
-     * @Route("/{type}/random", name="random_entry", requirements={"type": "unread|starred|archive|untagged|all"})
+     * @Route("/{type}/random", name="random_entry", requirements={"type": "unread|starred|archive|untagged|with_annotations|all"})
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -502,6 +516,9 @@ class EntryController extends Controller
                 break;
             case 'archive':
                 $qb = $repository->getBuilderForArchiveByUser($this->getUser()->getId());
+                break;
+            case 'with_annotations':
+                $qb = $repository->getBuilderForAnnotationsByUser($this->getUser()->getId());
                 break;
             case 'unread':
                 $qb = $repository->getBuilderForUnreadByUser($this->getUser()->getId());
