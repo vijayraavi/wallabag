@@ -52,14 +52,21 @@ class EntryRepository extends EntityRepository
      */
     public function getBuilderForSameDomainByUser($userId, $entryId)
     {
-        dump($entryId);die;
-
-        $
+        $queryBuilder = $this->createQueryBuilder('e');
 
         return $this
             ->getSortedQueryBuilderByUser($userId)
-            ->andWhere('e.isArchived = false')
-        ;
+            ->andWhere('e.id <> :entryId')->setParameter('entryId', $entryId)
+            ->andWhere(
+                $queryBuilder->expr()->in(
+                    'e.domainName',
+                    $this
+                        ->createQueryBuilder('e2')
+                        ->select('e2.domainName')
+                        ->where('e2.id = :entryId')->setParameter('entryId', $entryId)
+                        ->getDQL()
+                )
+            );
     }
 
     /**
